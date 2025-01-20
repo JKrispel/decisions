@@ -20,7 +20,7 @@ add_library(decisions STATIC
     src/action_manager/action_manager.cpp
     src/decision_tree/decision.cpp
     src/decision_tree/final_decision.cpp
-)
+   )
 
 # Include directories
 target_include_directories(decisions PUBLIC 
