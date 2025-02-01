@@ -6,20 +6,35 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if(MSVC)
-    # Match the runtime library with the main project
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-
-    # Match compilation options
-    add_compile_options(/arch:AVX2)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:DLL>")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>")
 endif()
+
+
+# Force MD/MDd runtime library
+if (MSVC)
+    # Iterate over all standard MSVC flag variables
+    foreach (flag_var
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+        CMAKE_C_FLAGS_MINSIZEREL
+        CMAKE_C_FLAGS_RELWITHDEBINFO
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_MINSIZEREL
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+        # Ensure MT/MTd flags are replaced with MD/MDd correctly
+        string(REPLACE "/MT" "/MD" ${flag_var} "${${flag_var}}")
+        string(REPLACE "/MTd" "/MDd" ${flag_var} "${${flag_var}}")
+    endforeach ()
+endif ()
 
 # Add library target
 add_library(decisions STATIC 
     src/action_manager/action.cpp
     src/action_manager/action_manager.cpp
     src/decision_tree/decision.cpp
-    src/decision_tree/final_decision.cpp
+    
    )
 
 # Include directories

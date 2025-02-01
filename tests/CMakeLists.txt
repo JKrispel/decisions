@@ -1,9 +1,10 @@
-# Include FetchContent module
+### Tests Subdirectory CMakeLists.txt ###
 include(FetchContent)
 
 if(MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:DebugDLL>")
 endif()
+
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # Fetch Google Test
 FetchContent_Declare(
@@ -29,3 +30,5 @@ if(NOT CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 else()
     install(TARGETS test_decisions)
 endif()
+
+### END ###

@@ -16,7 +16,7 @@ public:
 	std::priority_queue<std::unique_ptr<Action>, std::vector<std::unique_ptr<Action>>, CompareActions> queue;
 	std::set<std::unique_ptr<Action>, CompareActions> active;	// Sygnalizuje, które akcje sa aktywne (isComplete() decyduje o usunieciu)
 	// Obie struktury sa uporzadkowane rosnaco !!
-	void scheduleAction(std::unique_ptr<Action>);
+	void scheduleAction(std::unique_ptr<Action> action);
 	void execute(float currentTime);
 };
 

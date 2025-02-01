@@ -1,38 +1,15 @@
 ﻿#pragma once
-#include "decisions/action_manager/action.h"
 #include "decisions/decision_tree/decision_tree_node.h"
 #include "decisions/decision_tree/decision.h"
 #include "decisions/decision_tree/final_decision.h"
 #include <iostream>
 #include <gtest/gtest.h>
 
-
-// StopAction: Represents an action to "stop"
-class StopAction : public Action {
-public:
-    StopAction(float priority, float expiryTime = 10.0f, bool complete = false)
-        : Action(priority, expiryTime, complete) {
-    }
-
-    void execute() override {
-        std::cout << "StopAction executed!" << std::endl;
-    }
+// Possible Actions
+enum class NpcAction {
+    FOLLOW,
+    STOP,
 };
-
-// FollowAction: Represents an action to "follow"
-class FollowAction : public Action {
-public:
-    FollowAction(float priority, float expiryTime = 10.0f, bool complete = false)
-        : Action(priority, expiryTime, complete) {
-    }
-
-    void execute() override {
-        std::cout << "FollowAction executed!" << std::endl;
-    }
-};
-
-StopAction stop(1.0f);
-FollowAction follow(1.0f);
 
 class TestDecision : public Decision {
 public:
@@ -41,11 +18,11 @@ public:
 
         if (distance < 5) {
             // Return FinalDecision with StopAction
-            return std::make_unique<FinalDecision>(stop);
+            return std::make_unique<FinalDecision<NpcAction>>(NpcAction::STOP);
         }
         else {
             // Return FinalDecision with FollowAction
-            return std::make_unique<FinalDecision>(follow);
+            return std::make_unique<FinalDecision<NpcAction>>(NpcAction::FOLLOW);
         }
     }
 };
@@ -55,28 +32,15 @@ TEST(DecisionTreeTest, ActionInheritedBasedOnDistance) {
     TestDecision rootNode;
 
     // Call the decision-making logic
-    std::unique_ptr<DecisionTreeNode> decision = rootNode.makeDecision();
+    std::unique_ptr<DecisionTreeNode> decision = rootNode.getBranch();
 
-    // Verify that the decision is a FinalDecision
-    ASSERT_TRUE(dynamic_cast<FinalDecision*>(decision.get()) != nullptr)
-        << "Expected decision to be FinalDecision.";
+    // Verify that the decision is a FinalDecision<NpcAction>
+    auto* finalDecision = dynamic_cast<FinalDecision<NpcAction>*>(decision.get());
+    ASSERT_NE(finalDecision, nullptr) << "Expected decision to be of type FinalDecision<NpcAction>.";
 
-    // Cast the decision to FinalDecision to access getActionRef()
-    FinalDecision* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
-    ASSERT_TRUE(finalDecision != nullptr) << "Expected decision to be of type FinalDecision.";
+    // Get the stored action type
+    NpcAction actionType = finalDecision->getActionType();
 
-    // Get the Action reference from FinalDecision
-    Action& action = finalDecision->getActionRef();
-    // Check the type of Action and execute
-    if (dynamic_cast<StopAction*>(&action)) {
-        std::cout << "StopAction is the chosen action." << std::endl;
-        action.execute(); // Should output: StopAction executed!
-    }
-    else if (dynamic_cast<FollowAction*>(&action)) {
-        FAIL() << "FollowAction chosen instead of StopAction." << std::endl;
-        action.execute(); // Should output: FollowAction executed!
-    }
-    else {
-        FAIL() << "Action type is neither StopAction nor FollowAction.";
-    }
+    // Check if the action type is STOP
+    ASSERT_EQ(actionType, NpcAction::STOP) << "Expected NpcAction::STOP but got a different action.";
 }
