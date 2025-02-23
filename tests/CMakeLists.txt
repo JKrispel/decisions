@@ -8,7 +8,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 # Add test executable
-add_executable(test_decisions "test_decision_tree.cpp")
+add_executable(test_decisions "test_decision_tree.cpp" "test_state_machine.cpp")
 
 # Link Google Test and the decisions library
 target_link_libraries(test_decisions PRIVATE gtest gtest_main decisions)
