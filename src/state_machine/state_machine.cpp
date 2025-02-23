@@ -11,7 +11,7 @@ StateMachine::StateMachine(int initialStateAction, int entryAction, int exitActi
 std::unique_ptr<std::vector<int>> StateMachine::update()
 {
     std::unique_ptr<Transition> triggeredPtr;
-
+    int triggeredIndex{};
     std::vector<std::unique_ptr<Transition>>& transitionsRef = machineStates[currentStateIndex].getTransitionsRef();
 
     for (auto& transition : transitionsRef) {
@@ -21,6 +21,7 @@ std::unique_ptr<std::vector<int>> StateMachine::update()
             triggeredPtr = std::move(transition);
             break;
         }
+        triggeredIndex++;
     }
     
     auto actionsPtr = std::make_unique<std::vector<int>>();
@@ -33,8 +34,8 @@ std::unique_ptr<std::vector<int>> StateMachine::update()
         actionsPtr->push_back(triggeredPtr->getAction());   // Akcja przejścia
         actionsPtr->push_back(machineStates[targetStateIndex].getEntryAction());    // Akcja wejścia do nowego stanu
 
-
-        currentStateIndex = targetStateIndex;    // zmień stan na nowy (ale to niewygodne pamietac ktora instancja State na ktorym indeksie !)
+        transitionsRef[triggeredIndex] = std::move(triggeredPtr);
+        currentStateIndex = targetStateIndex;    // zmień stan na nowy
         return std::move(actionsPtr);
     }
     else {
