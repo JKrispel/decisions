@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 
 // możliwe Akcje
-enum class NpcAction {
+enum NpcAction {
     FOLLOW,
     STOP,
 };
@@ -18,11 +18,11 @@ public:
 
         if (distance < 5) {
 
-            return std::make_unique<FinalDecision<NpcAction>>(NpcAction::STOP);
+            return std::make_unique<FinalDecision>(NpcAction::STOP);
         }
         else {
 
-            return std::make_unique<FinalDecision<NpcAction>>(NpcAction::FOLLOW);
+            return std::make_unique<FinalDecision>(NpcAction::FOLLOW);
         }
     }
 };
@@ -35,10 +35,10 @@ TEST(DecisionTreeTest, ActionInheritedBasedOnDistance) {
     std::unique_ptr<DecisionTreeNode> decision = rootNode.getBranch();
 
     // zweryfikuj, że typ to FinalDecision<NpcAction>
-    auto* finalDecision = dynamic_cast<FinalDecision<NpcAction>*>(decision.get());
+    auto* finalDecision = dynamic_cast<FinalDecision*>(decision.get());
     ASSERT_NE(finalDecision, nullptr) << "Expected decision to be of type FinalDecision<NpcAction>.";
 
-    NpcAction actionType = finalDecision->getActionType();
+    int actionType = finalDecision->getActionType();
 
     ASSERT_EQ(actionType, NpcAction::STOP) << "Expected NpcAction::STOP but got a different action.";
 }

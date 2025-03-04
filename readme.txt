@@ -2,8 +2,7 @@
 
 Będąc w folderze decisions/build uruchom komendy w tej kolejności (zastąp swoją ścieżką docelową):
 
-cmake .. -DCMAKE_INSTALL_PREFIX=C:\Users\kozoh\source\repos\JKrispel\projektDyplomowy\thirdparty\decisions
-cmake --build . --config Debug
-cmake --install . --config Debug
+cmake .. -DCMAKE_INSTALL_PREFIX=C:/Users/kozoh/source/repos/JKrispel/DecideQuickly/external/decisions
+cmake --build . --target install
 
-UWAGA: Dalej staram się rozwiązać problem nieporządanego instalowania plików biblioteki gtest.
+UWAGA: Dalej staram się rozwiązać problem niepożądanego instalowania plików biblioteki gtest.

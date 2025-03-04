@@ -16,7 +16,7 @@ add_library(decisions STATIC
     src/action_manager/action_manager.cpp
     src/decision_tree/decision.cpp    
     src/state_machine/state_machine.cpp
- "include/decisions/state_machine/state.h"  "src/state_machine/state.cpp" "src/state_machine/transition.cpp")
+ "include/decisions/state_machine/state.h"  "src/state_machine/state.cpp" "src/state_machine/transition.cpp" "src/decision_tree/final_decision.cpp")
 
 # Include directories
 target_include_directories(decisions PUBLIC 
